@@ -1,8 +1,0 @@
-prefix=/home/pi/Desktop/tracker_ws/devel
-
-Name: mpc
-Description: Description of mpc
-Version: 0.0.0
-Cflags: -I/home/pi/Desktop/tracker_ws/devel/include
-Libs: -L${prefix}/lib 
-Requires: roscpp std_msgs message_runtime

@@ -1,8 +1,0 @@
-prefix=/home/pi/Desktop/tracker_ws/devel
-
-Name: tracker_demo
-Description: Description of tracker_demo
-Version: 0.0.0
-Cflags: -I/home/pi/Desktop/tracker_ws/src/tracker_demo/include
-Libs: -L${prefix}/lib -ltracker_demo
-Requires: mpc roscpp rospy std_msgs sensor_msgs geometry_msgs message_runtime

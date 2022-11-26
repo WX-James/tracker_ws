@@ -1,2 +1,0 @@
-joy_stick:mpc:scout/scout_control:scout/scout_description:scout/scout_gazebo_sim:tracker_demo
--DCATKIN_DEVEL_PREFIX=/home/pi/Desktop/tracker_ws/devel -DCMAKE_INSTALL_PREFIX=/home/pi/Desktop/tracker_ws/install -G Unix Makefiles
