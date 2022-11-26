@@ -2,7 +2,7 @@
 遥控-跟踪demo
 
 
-1）OSQP安装
+（1）OSQP安装
 
 ```bash
 git clone --recursive https://github.com/osqp/osqp
