@@ -100,7 +100,6 @@ void stateCallback(const ros::TimerEvent& e)
     if(dist > hold_dist)
     {
         tracker_state = FOLLOW;
-        
     }
     else
     {
@@ -140,7 +139,6 @@ void stateCallback(const ros::TimerEvent& e)
             fix_target_odom.pose.pose.position.z = fix_target[2];
 
             pub_traj(fix_target_odom);
-            // pub_traj_plus();
             break;
         }
     }

@@ -1,6 +1,10 @@
 <launch>
-    <!-- gazebo -->
-    <arg name="gzclient" default="true"/>
+    <!-- 是否启用gazebo可视化 -->
+    <arg name="gzclient" default="false"/>
+    <!-- 是否使用ps2手柄 -->
+    <arg name="use_joy_stick" default="false"/>
+    <!-- 是否使用键盘控制 -->
+    <arg name="use_telelop" default="true"/>
 
     <!-- 启动gazebo世界 -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -12,8 +16,17 @@
     <!-- 加载scout2 多机 -->
     <include file="$(find scout_gazebo_sim)/launch/spawn_scout_v2.launch"></include>
 
-    <!-- 加载遥控器 -->
-    <include file="$(find joy_stick)/launch/run_joy_stick.launch"></include>
+    <!-- ps2遥控器 -->
+    <group if="$(arg use_joy_stick)">
+        <include file="$(find joy_stick)/launch/run_joy_stick.launch"></include>
+    </group>
+
+    <!-- 键盘控制 -->
+    <group if="$(arg use_telelop)">
+        <node name="teleop_cmd_vel" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" launch-prefix="gnome-terminal --title=teleop_twist_keyboard -x">
+            <remap from="/cmd_vel" to="/robot2/cmd_vel"/>
+        </node>
+    </group>
 
     <!-- 轨迹跟踪demo -->
     <node name="tracker_state_machine_demo" pkg="tracker_demo" type="tracker_state_machine" output="screen"/>
