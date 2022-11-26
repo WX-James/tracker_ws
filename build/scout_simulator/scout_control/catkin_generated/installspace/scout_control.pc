@@ -1,0 +1,8 @@
+prefix=/home/pi/Desktop/tracker_ws/install
+
+Name: scout_control
+Description: Description of scout_control
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

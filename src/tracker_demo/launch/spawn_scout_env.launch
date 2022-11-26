@@ -1,0 +1,27 @@
+<launch>
+    <!-- gazebo -->
+    <arg name="gzclient" default="true"/>
+
+    <!-- 启动gazebo世界 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find tracker_demo)/meshes/scout_empty.world"/>
+        <arg name="gui" value="$(arg gzclient)"/>
+        <arg name="use_sim_time" value="true"/>
+    </include>
+
+    <!-- 加载scout2 多机 -->
+    <include file="$(find scout_gazebo_sim)/launch/spawn_scout_v2.launch"></include>
+
+    <!-- 加载遥控器 -->
+    <include file="$(find joy_stick)/launch/run_joy_stick.launch"></include>
+
+    <!-- 轨迹跟踪demo -->
+    <node name="tracker_state_machine_demo" pkg="tracker_demo" type="tracker_state_machine" output="screen"/>
+
+    <!-- MPC轨迹跟踪器 -->
+    <include file="$(find mpc)/launch/test_mpc.launch"></include>
+
+    <!-- rviz可视化 -->
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find tracker_demo)/config/scout_multi.rviz" />
+
+</launch>

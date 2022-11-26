@@ -1,0 +1,8 @@
+prefix=/home/pi/Desktop/tracker_ws/devel
+
+Name: scout_gazebo_sim
+Description: Description of scout_gazebo_sim
+Version: 0.0.1
+Cflags: -I/home/pi/Desktop/tracker_ws/src/scout/scout_gazebo_sim/include
+Libs: -L${prefix}/lib 
+Requires: roscpp sensor_msgs
