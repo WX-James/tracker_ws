@@ -36,6 +36,6 @@ sudo make install
 
 ```bash
 source devel/setup.bash
-roslaunch mpc test_mpc.launch
+roslaunch tracker_demo spawn_scout_env.launch
 ```
 
