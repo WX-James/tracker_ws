@@ -2,9 +2,9 @@
     <!-- 是否启用gazebo可视化 -->
     <arg name="gzclient" default="false"/>
     <!-- 是否使用ps2手柄 -->
-    <arg name="use_joy_stick" default="false"/>
+    <arg name="use_joy_stick" default="true"/>
     <!-- 是否使用键盘控制 -->
-    <arg name="use_telelop" default="true"/>
+    <arg name="use_telelop" default="false"/>
     <!-- 是否使用lmpc -->
     <arg name="use_lmpc" default="false"/>
 

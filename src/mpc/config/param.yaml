@@ -1,5 +1,5 @@
 mpc:
-  du_threshold: 0.001
+  du_threshold: 0.05
   max_iter: 150
   dt: 0.05
   predict_steps: 50
