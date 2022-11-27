@@ -5,6 +5,8 @@
     <arg name="use_joy_stick" default="false"/>
     <!-- 是否使用键盘控制 -->
     <arg name="use_telelop" default="true"/>
+    <!-- 是否使用lmpc -->
+    <arg name="use_lmpc" default="false"/>
 
     <!-- 启动gazebo世界 -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -28,11 +30,18 @@
         </node>
     </group>
 
+    <!-- 线性MPC轨迹跟踪器 -->
+    <group if="$(arg use_lmpc)">
+        <include file="$(find mpc)/launch/test_mpc.launch"></include>
+    </group>
+
+    <!-- 非线性MPC轨迹跟踪器 -->
+    <group unless="$(arg use_lmpc)">
+        <node name="nmpc" pkg="mpc" type="local_planner.py" launch-prefix="gnome-terminal --title=nmpc_python -x" />
+    </group>
+
     <!-- 轨迹跟踪demo -->
     <node name="tracker_state_machine_demo" pkg="tracker_demo" type="tracker_state_machine" output="screen"/>
-
-    <!-- MPC轨迹跟踪器 -->
-    <include file="$(find mpc)/launch/test_mpc.launch"></include>
 
     <!-- rviz可视化 -->
     <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find tracker_demo)/config/scout_multi.rviz" />

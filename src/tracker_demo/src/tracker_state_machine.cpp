@@ -3,16 +3,20 @@
 #include <deque>
 
 #include "nav_msgs/Odometry.h"
-#include "mpc/Polynome.h"
+#include "tf/transform_datatypes.h"
+
+#include "mpc/Polynome.h"                   // 自定义消息
+#include "std_msgs/Float32MultiArray.h"
 
 #define delta_t 0.05
 #define traj_size 10
-#define hold_dist 3.0
+#define hold_dist 2.0
 
 #define max_traj_point 10
 #define min_traj_point 5
 
-ros::Publisher traj_pub;
+ros::Publisher traj_pub_lmpc;
+ros::Publisher traj_pub_nmpc;
 
 nav_msgs::Odometry target_odom;
 nav_msgs::Odometry robot_odom;
@@ -45,6 +49,16 @@ Eigen::Vector3d odom2vector(nav_msgs::Odometry odom)
     return pos;
 }
 
+double get_yaw(nav_msgs::Odometry odom)
+{
+    tf::Quaternion quat;
+    tf::quaternionMsgToTF(odom.pose.pose.orientation, quat);
+
+    double roll, pitch, yaw;
+    tf::Matrix3x3(quat).getRPY(roll, pitch, yaw); //四元数转rpy
+    return yaw;
+}
+
 double calc_distance(nav_msgs::Odometry target, nav_msgs::Odometry agent)
 {
     double distance;
@@ -58,7 +72,7 @@ double calc_distance(nav_msgs::Odometry target, nav_msgs::Odometry agent)
     return distance;
 }
 
-void pub_traj(nav_msgs::Odometry odom_traj)
+void pub_traj_lmpc(nav_msgs::Odometry odom_traj)
 {
     mpc::Polynome poly;
     geometry_msgs::Point temp;
@@ -85,7 +99,22 @@ void pub_traj(nav_msgs::Odometry odom_traj)
     poly.init_a.z = 0;
     poly.start_time = ros::Time::now();
 
-    traj_pub.publish(poly);
+    traj_pub_lmpc.publish(poly);
+}
+
+void pub_traj_nmpc(nav_msgs::Odometry odom_traj)
+{
+    std_msgs::Float32MultiArray waypoint_array;
+
+    for(int i = 0; i < traj_size; i++)
+    {
+        double target_yaw = get_yaw(odom_traj);
+
+        waypoint_array.data.push_back(odom_traj.pose.pose.position.x);
+        waypoint_array.data.push_back(odom_traj.pose.pose.position.y);
+        waypoint_array.data.push_back(target_yaw);
+    }
+    traj_pub_nmpc.publish(waypoint_array);
 }
 
 void stateCallback(const ros::TimerEvent& e) 
@@ -113,7 +142,11 @@ void stateCallback(const ros::TimerEvent& e)
         case STOP: 
         {
             // 发布机器人位置
-            pub_traj(robot_odom);
+
+            pub_traj_lmpc(robot_odom);          // 发布lmpc的参考轨迹
+
+            pub_traj_nmpc(robot_odom);          // 发布nmpc的参考轨迹
+
             break;
         }
         case FOLLOW:
@@ -134,11 +167,15 @@ void stateCallback(const ros::TimerEvent& e)
             // std::cout << "fix_target:= " << fix_target.transpose() << std::endl;
 
             nav_msgs::Odometry fix_target_odom;
-            fix_target_odom.pose.pose.position.x = fix_target[0];
+            fix_target_odom.pose.pose.position.x = fix_target[0];   // 目标位置
             fix_target_odom.pose.pose.position.y = fix_target[1];
             fix_target_odom.pose.pose.position.z = fix_target[2];
+            fix_target_odom.pose.pose.orientation = target_odom.pose.pose.orientation;   // 目标姿态
 
-            pub_traj(fix_target_odom);
+            pub_traj_lmpc(fix_target_odom);         // 发布lmpc的参考轨迹
+
+            pub_traj_nmpc(fix_target_odom);         // 发布nmpc的参考轨迹
+
             break;
         }
     }
@@ -153,7 +190,8 @@ int main( int argc, char * argv[] )
 
     ROS_WARN("tracker_state_machine init done");
 
-    traj_pub = node.advertise<mpc::Polynome>("trajectory",3);
+    traj_pub_lmpc = node.advertise<mpc::Polynome>("trajectory",3);
+    traj_pub_nmpc = node.advertise<std_msgs::Float32MultiArray>("mpc/traj_point", 3);
 
     ros::Subscriber odom_sub1 = node.subscribe("/state_ukf/odom1", 50, odom1Callbck);   // robot1里程接收
     ros::Subscriber odom_sub2 = node.subscribe("/state_ukf/odom2", 50, odom2Callbck);   // robot2里程接收
