@@ -1,6 +1,6 @@
 <launch>
     <!-- 是否启用gazebo可视化 -->
-    <arg name="gzclient" default="false"/>
+    <arg name="gzclient" default="true"/>
     <!-- 是否使用ps2手柄 -->
     <arg name="use_joy_stick" default="true"/>
     <!-- 是否使用键盘控制 -->
@@ -31,7 +31,7 @@
     </group>
 
     <!-- 线性MPC轨迹跟踪器 -->
-    <group if="$(arg use_lmpc)">
+    <group if="$(arg use_lmpc)">/
         <include file="$(find mpc)/launch/test_mpc.launch"></include>
     </group>
 

@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Eigen3 REQUIRED)
 # find_package(osqp REQUIRED)
 find_package(OsqpEigen REQUIRED)
-find_package(PCL 1.10 REQUIRED)
+find_package(PCL 1.8 REQUIRED)
 
 add_message_files(FILES
   Polynome.msg
@@ -24,14 +24,16 @@ generate_messages(DEPENDENCIES
 )
 
 catkin_package(
- CATKIN_DEPENDS roscpp std_msgs
- message_runtime
+  INCLUDE_DIRS include
+  CATKIN_DEPENDS roscpp std_msgs
+  message_runtime
 #  DEPENDS system_lib
 )
 
 include_directories( 
     SYSTEM 
     include 
+
     ${catkin_INCLUDE_DIRS}
     ${Eigen3_INCLUDE_DIRS} 
     ${PCL_INCLUDE_DIRS}

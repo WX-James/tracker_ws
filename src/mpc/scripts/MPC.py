@@ -7,11 +7,11 @@ import time
 def MPC(self_state, goal_state):
     opti = ca.Opti()
     ## parameters for optimization
-    T = 0.05
-    N = 10  # MPC horizon
-    v_max = 1.5
+    T = 0.05                        # MPC的离散时间，需要与local_planner.py的self.replan_period相等
+    N = 10  # MPC horizon           # MPC的预测步长，需要与local_planner.py的self.N保持相等
+    v_max = 1.5                     # 约束的小车最大线速度
     # omega_max = 0.523
-    omega_max = 5.0
+    omega_max = 5.0                 # 约束的小车最大角速度
     Q = np.array([[2.0, 0.0, 0.0],[0.0, 2.0, 0.0],[0.0, 0.0, 0.1]])
     R = np.array([[0.5, 0.0], [0.0, 0.4]])
     goal = goal_state[:,:3]
