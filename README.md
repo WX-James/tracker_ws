@@ -1,5 +1,5 @@
 # tracker_ws
-遥控-跟踪demo
+# 遥控-跟踪demo
 
 
 （1）OSQP安装
@@ -26,7 +26,13 @@ make
 sudo make install
 ```
 
-（3）Scout仿真相关依赖
+（3）casadi求解器安装
+
+```bash
+pip install casadi
+```
+
+（4）Scout仿真相关依赖
 
 请参考松灵官方：https://github.com/agilexrobotics/ugv_gazebo_sim/tree/master/scout
 
